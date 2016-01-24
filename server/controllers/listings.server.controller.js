@@ -48,8 +48,24 @@ exports.update = function(req, res) {
   var listing = req.listing;
 
   /* Replace the article's properties with the new properties found in req.body */
+  listing.name = req.body.name;
+  listing.code = req.body.code;
+  listing.address = req.body.address;
   /* save the coordinates (located in req.results if there is an address property) */
+  if(req.results){
+    listing.coordinates.latitude = req.results.lat;
+	listing.coordinates.longitude = req.results.lng;
+  }
   /* Save the article */
+  listing.save(function(err) {
+    if(err) {
+      console.log(err);
+      res.status(404).send(err);
+    } else {
+	  console.log('Listing Has Been Updated');
+      res.json(listing);
+    }
+  });
 };
 
 /* Delete a listing */
@@ -57,11 +73,31 @@ exports.delete = function(req, res) {
   var listing = req.listing;
 
   /* Remove the article */
+  listing.remove(function(err){
+    if(err){
+	  console.log(err);
+	  res.status(404).send(err);
+	}
+	else{
+      res.json(listing);
+      console.log('Listing Has Been Deleted');
+	}
+  })
 };
 
 /* Retreive all the directory listings, sorted alphabetically by listing code */
 exports.list = function(req, res) {
   /* Your code here */
+  Listing.find({}, null, {sort: {code:1}}, function(err, listings){
+    if(err){
+	  console.log(err);
+	  res.status(404).send(err);
+	}
+	else{
+      res.json(listings);
+	  console.log('Retreived Listings Alphabetically By Listing Code');
+	}
+  })
 };
 
 /* 
