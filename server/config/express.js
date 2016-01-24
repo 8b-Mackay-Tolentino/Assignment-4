@@ -1,4 +1,4 @@
-var path = require('path'),  
+var path = require('path'),   
     express = require('express'), 
     mongoose = require('mongoose'),
     morgan = require('morgan'),
